@@ -104,7 +104,7 @@
     <div class="righttop dot"></div>
     <div class="rightbottom dot"></div>
     <h2 class="date">
-      {formatedDate($date, $lang)}{yearOffset ? "+" + yearOffset : ""}
+      {formatedDate($date, $lang)}{yearOffset ? (yearOffset > 0 ? "+" : "") + yearOffset : ""}
     </h2>
     <div class="grid" style="--nbRow:{rows}}">
       {#each weekOfTheDay[$lang] as day}
@@ -116,10 +116,11 @@
           class="day cell {size}"
           class:currentMonth={day.isCurrentMonth ||showNonCurrentMonth}
           on:click={() => onDayClick(day)}
+          style="background:{day.bg};"
         >
           <div
             class="innerCell"
-            style="background:{day.bg}; border-color:{day.bd}"
+            style="border-color:{day.bd}"
           >
             <span> {day.day}</span>
             <span>{day.text}</span>

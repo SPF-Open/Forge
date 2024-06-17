@@ -1,7 +1,7 @@
 import { Language } from "../store";
 
 export class Day {
-  constructor(public day: number, public isCurrentMonth: boolean, public text: string = "", public bg= "#fff", public bd = "#fff", public menu = false) {}
+  constructor(public day: number, public isCurrentMonth: boolean, public text: string = "", public bg= "transparent", public bd = "transparent", public menu = false) {}
   get toString () {
     return this.text;
   } 
