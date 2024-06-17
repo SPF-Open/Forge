@@ -12,8 +12,6 @@
   let yearOffset = 0;
   let showNonCurrentMonth = false;
 
-  $: console.log(showNonCurrentMonth);
-
   $: rows = Math.floor(days.length / 7);
 
   dateString.subscribe((d) => {
@@ -145,7 +143,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
     text-align: center;
   }
   .header {
