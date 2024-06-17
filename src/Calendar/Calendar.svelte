@@ -182,7 +182,7 @@
   }
 
   .cell.sm {
-    width: 5rem;
+    width: 6rem;
   }
 
   .cell.md {
@@ -190,7 +190,7 @@
   }
 
   .cell.lg {
-    width: 11rem;
+    width: 10rem;
   }
 
   .cell:last-child, .cell:last-child > * {
