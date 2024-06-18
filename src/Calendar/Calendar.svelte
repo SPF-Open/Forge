@@ -1,19 +1,25 @@
 <script lang="ts">
   import { writable } from "svelte/store";
+
   import { Day, Size, formatedDate, weekOfTheDay } from "./Calendar.helper";
   import DayMenu from "./DayMenu.svelte";
   import { lang } from "../store";
+  import Element from "../Element.svelte";
 
+  // Stores
   export let date = writable(new Date());
   export let dateString = writable("");
-  const daysInCalendar = 42;
+
+  // Construction
   let days: Day[] = [];
+  $: rows = Math.floor(days.length / 7);
+
+  // Options
   let size = Size.md;
   let yearOffset = 0;
   let showNonCurrentMonth = false;
 
-  $: rows = Math.floor(days.length / 7);
-
+  // When we update the date with datepicker
   dateString.subscribe((d) => {
     const dateStringTemp = $date.toISOString().split("T")[0];
     if (d && dateStringTemp !== $dateString) {
@@ -27,37 +33,11 @@
       dateString.update((_) => dateStringTemp);
       console.log(dateStringTemp);
     }
-
-    const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
-    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-    const lastDayOfPreviousMonth = new Date(d.getFullYear(), d.getMonth(), 0);
-    const daysInMonth = lastDay.getDate();
-    const daysInPreviousMonth = lastDayOfPreviousMonth.getDate();
-    const firstDayWeek = firstDay.getDay();
-
-    days = [];
-    for (let i = 0; i < daysInCalendar; i++) {
-      if (i < firstDayWeek) {
-        days.push(new Day(daysInPreviousMonth - firstDayWeek + i + 1, false));
-      } else if (i < daysInMonth + firstDayWeek) {
-        days.push(new Day(i - firstDayWeek + 1, true));
-      } else {
-        days.push(new Day(i - daysInMonth - firstDayWeek + 1, false));
-      }
-    }
-
-    //If last 7 days are out of the current month, remove them
-    if (days[days.length - 7].isCurrentMonth === false) {
-      days = days.slice(0, daysInCalendar - 7);
-    }
+    days = Day.from(d);
   });
 
-  const nextMonth = () => {
-    date.update((d) => new Date(d.getFullYear(), d.getMonth() + 1, 15));
-  };
-
-  const previousMonth = () => {
-    date.update((d) => new Date(d.getFullYear(), d.getMonth() - 1, 15));
+  const changeMonth = (offset: number) => {
+    date.update((d) => new Date(d.getFullYear(), d.getMonth() + offset, 15));
   };
 
   const onDayClick = (day: Day, force = true) => {
@@ -67,11 +47,12 @@
   };
 </script>
 
-<div class="calendar">
-  <div class="header">
+<Element>
+  <span slot="title">Calendar</span>
+  <svelte:fragment slot="options">
     <nav>
-      <button on:click={previousMonth}>Previous</button>
-      <button on:click={nextMonth}>Next</button>
+      <button on:click={() => changeMonth(-1)}>Previous</button>
+      <button on:click={() => changeMonth(+1)}>Next</button>
     </nav>
     <div class="dateInput">
       <input type="date" bind:value={$dateString} />
@@ -95,14 +76,12 @@
       />
       <label for="showNonCurrentMonth">Show non current month</label>
     </div>
-  </div>
-  <div class="div">
-    <div class="lefttop dot"></div>
-    <div class="leftbottom dot"></div>
-    <div class="righttop dot"></div>
-    <div class="rightbottom dot"></div>
+  </svelte:fragment>
+  <svelte:fragment>
     <h2 class="date">
-      {formatedDate($date, $lang)}{yearOffset ? (yearOffset > 0 ? "+" : "") + yearOffset : ""}
+      {formatedDate($date, $lang)}{yearOffset
+        ? (yearOffset > 0 ? "+" : "") + yearOffset
+        : ""}
     </h2>
     <div class="grid" style="--nbRow:{rows}}">
       {#each weekOfTheDay[$lang] as day}
@@ -112,14 +91,11 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <div
           class="day cell {size}"
-          class:currentMonth={day.isCurrentMonth ||showNonCurrentMonth}
+          class:currentMonth={day.isCurrentMonth || showNonCurrentMonth}
           on:click={() => onDayClick(day)}
           style="background:{day.bg};"
         >
-          <div
-            class="innerCell"
-            style="border-color:{day.bd}"
-          >
+          <div class="innerCell" style="border-color:{day.bd}">
             <span> {day.day}</span>
             <span>{day.text}</span>
           </div>
@@ -129,13 +105,15 @@
         </div>
       {/each}
     </div>
-  </div>
-</div>
+  </svelte:fragment>
+</Element>
+
 
 <style>
   .date {
     margin: 0.2rem;
     font-size: 2rem;
+    text-align: center;
   }
   .calendar {
     zoom: 1.2;
@@ -145,29 +123,8 @@
     align-items: center;
     text-align: center;
   }
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .header > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .header > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
 
   .grid {
-    margin: 1rem;
     --bd: darkgray;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -176,6 +133,7 @@
     position: relative;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--bd);
+    width: fit-content;
   }
 
   .cell.sm {
@@ -190,11 +148,13 @@
     width: 10rem;
   }
 
-  .cell:last-child, .cell:last-child > * {
+  .cell:last-child,
+  .cell:last-child > * {
     border-radius: 0 0 0.8rem 0.8rem;
   }
 
-  .cell:nth-last-child(7), .cell:nth-last-child(7) > * {
+  .cell:nth-last-child(7),
+  .cell:nth-last-child(7) > * {
     border-radius: 0 0 0 0.8rem;
   }
 

@@ -1,6 +1,5 @@
 <script lang="ts">
   import Calendar from "./Calendar/Calendar.svelte";
-  import Element from "./Element.svelte";
   import { Language, lang } from "./store";
 </script>
 
@@ -19,11 +18,7 @@
       </div>
     </div>
   </div>
-
-  <Element>
-    <span slot="title"> Calendar </span>
-    <Calendar />
-  </Element>
+  <Calendar />
 </main>
 
 <style>
