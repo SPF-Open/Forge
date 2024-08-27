@@ -13,7 +13,7 @@ export class Day {
     const lastDayOfPreviousMonth = new Date(d.getFullYear(), d.getMonth(), 0);
     const daysInMonth = lastDay.getDate();
     const daysInPreviousMonth = lastDayOfPreviousMonth.getDate();
-    const firstDayWeek = firstDay.getDay();
+    const firstDayWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
 
     let days = [];
     for (let i = 0; i < daysInCalendar; i++) {
@@ -25,7 +25,6 @@ export class Day {
         days.push(new Day(i - daysInMonth - firstDayWeek + 1, false));
       }
     }
-
     //If last 7 days are out of the current month, remove them
     if (days[days.length - 7].isCurrentMonth === false) {
       days = days.slice(0, daysInCalendar - 7);
