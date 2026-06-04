@@ -1,12 +1,28 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-sidebar: #fafaf9;
+  --color-border: #e0e0e0;
+  --color-border-light: #efefef;
+  --color-text: #1a1a1a;
+  --color-text-secondary: #666666;
+  --color-text-muted: #a0a0a0;
+  --color-accent: #0066cc;
+  --color-accent-light: #e6f2ff;
+  --color-accent-hover: #0052a3;
+  --color-danger: #dc2626;
+  --color-success: #16a34a;
+
+  font-family: '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-size: 13px;
   line-height: 1.5;
   font-weight: 400;
+  letter-spacing: -0.3px;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,9 +30,73 @@
   -webkit-text-size-adjust: 100%;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  border: none;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 0.55rem 1.2rem;
+  border-radius: 0.4rem;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+button:hover {
+  background: var(--color-accent-hover);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+button:active {
+  transform: none;
+}
+
+select, input[type='date'], input[type='number'], input[type='text'], textarea {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+select:focus, input:focus, textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border-light);
+  margin: 1rem 0;
 }

@@ -27,18 +27,55 @@
 
 <style>
   .menu {
-    top: 80%;
-    left: 50%;
-    z-index: 1;
+    top: 100%;
+    left: 0;
+    z-index: 10;
     position: absolute;
-    background-color: white;
+    background: var(--color-surface);
     display: grid;
-    grid-template-columns: auto auto;
-    gap: 0.6rem;
-    width: fit-content;
-    padding: 0.3rem;
-    border: 1px solid black;
-    border-radius: 0.3rem;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 0.75rem;
+    align-items: center;
+    width: 14rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border-strong);
+    border-top: 3px solid var(--color-accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+
+  .menu label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .menu input[type="color"] {
+    width: 100%;
+    height: 1.75rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 2px;
+    padding: 2px;
+    cursor: pointer;
+    background: var(--color-surface);
+  }
+
+  .menu textarea {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 4rem;
+    resize: vertical;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .menu button {
+    grid-column: 1 / -1;
+    margin-top: 0.25rem;
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.75rem;
   }
 </style>
