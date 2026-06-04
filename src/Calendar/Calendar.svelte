@@ -6,18 +6,23 @@
   import { lang } from "../store";
   import Element from "../Element.svelte";
 
-  // Stores
-  export let date = writable(new Date());
-  export let dateString = writable("");
+  
+  interface Props {
+    // Stores
+    date?: any;
+    dateString?: any;
+  }
+
+  let { date = writable(new Date()), dateString = writable("") }: Props = $props();
 
   // Construction
-  let days: Day[] = [];
-  $: rows = Math.floor(days.length / 7);
+  let days: Day[] = $state([]);
+  let rows = $derived(Math.floor(days.length / 7));
 
   // Options
-  let size = Size.md;
-  let yearOffset = 0;
-  let showNonCurrentMonth = false;
+  let size = $state(Size.md);
+  let yearOffset = $state(0);
+  let showNonCurrentMonth = $state(false);
 
   // When we update the date with datepicker
   dateString.subscribe((d) => {
@@ -48,64 +53,70 @@
 </script>
 
 <Element>
-  <span slot="title">Calendar</span>
-  <svelte:fragment slot="options">
-    <nav>
-      <button on:click={() => changeMonth(-1)}>Previous</button>
-      <button on:click={() => changeMonth(+1)}>Next</button>
-    </nav>
-    <div class="dateInput">
-      <input type="date" bind:value={$dateString} />
-    </div>
-    <div class="size">
-      <select bind:value={size}>
-        <option value={Size.sm}>Small</option>
-        <option value={Size.md}>Medium</option>
-        <option value={Size.lg}>Large</option>
-      </select>
-    </div>
-    <div class="offset">
-      <input type="number" id="offset" bind:value={yearOffset} />
-      <label for="offset">Offset</label>
-    </div>
-    <div class="showNonCurrentMonth">
-      <input
-        type="checkbox"
-        id="showNonCurrentMonth"
-        bind:checked={showNonCurrentMonth}
-      />
-      <label for="showNonCurrentMonth">Show non current month</label>
-    </div>
-  </svelte:fragment>
-  <svelte:fragment>
-    <h2 class="date">
-      {formatedDate($date, $lang)}{yearOffset
-        ? (yearOffset > 0 ? "+" : "") + yearOffset
-        : ""}
-    </h2>
-    <div class="grid" style="--nbRow:{rows}}">
-      {#each weekOfTheDay[$lang] as day}
-        <div class="weekday cell {size}">{day}</div>
-      {/each}
-      {#each days as day}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div
-          class="day cell {size}"
-          class:currentMonth={day.isCurrentMonth || showNonCurrentMonth}
-          on:click={() => onDayClick(day)}
-          style="background:{day.bg};"
-        >
-          <div class="innerCell" style="border-color:{day.bd}">
-            <span> {day.day}</span>
-            <span>{day.text}</span>
+  {#snippet title()}
+    <span >Calendar</span>
+  {/snippet}
+  {#snippet options()}
+  
+      <nav>
+        <button onclick={() => changeMonth(-1)}>Previous</button>
+        <button onclick={() => changeMonth(+1)}>Next</button>
+      </nav>
+      <div class="dateInput">
+        <input type="date" bind:value={$dateString} />
+      </div>
+      <div class="size">
+        <select bind:value={size}>
+          <option value={Size.sm}>Small</option>
+          <option value={Size.md}>Medium</option>
+          <option value={Size.lg}>Large</option>
+        </select>
+      </div>
+      <div class="offset">
+        <input type="number" id="offset" bind:value={yearOffset} />
+        <label for="offset">Offset</label>
+      </div>
+      <div class="showNonCurrentMonth">
+        <input
+          type="checkbox"
+          id="showNonCurrentMonth"
+          bind:checked={showNonCurrentMonth}
+        />
+        <label for="showNonCurrentMonth">Show non current month</label>
+      </div>
+    
+  {/snippet}
+  {#snippet children()}
+  
+      <h2 class="date">
+        {formatedDate($date, $lang)}{yearOffset
+          ? (yearOffset > 0 ? "+" : "") + yearOffset
+          : ""}
+      </h2>
+      <div class="grid" style="--nbRow:{rows}}">
+        {#each weekOfTheDay[$lang] as day}
+          <div class="weekday cell {size}">{day}</div>
+        {/each}
+        {#each days as day}
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <div
+            class="day cell {size}"
+            class:currentMonth={day.isCurrentMonth || showNonCurrentMonth}
+            onclick={() => onDayClick(day)}
+            style="background:{day.bg};"
+          >
+            <div class="innerCell" style="border-color:{day.bd}">
+              <span> {day.day}</span>
+              <span>{day.text}</span>
+            </div>
+            {#if day.menu && (day.isCurrentMonth || showNonCurrentMonth)}
+              <DayMenu {day} onClose={() => onDayClick(day, false)} />
+            {/if}
           </div>
-          {#if day.menu && (day.isCurrentMonth || showNonCurrentMonth)}
-            <DayMenu {day} onClose={() => onDayClick(day, false)} />
-          {/if}
-        </div>
-      {/each}
-    </div>
-  </svelte:fragment>
+        {/each}
+      </div>
+    
+  {/snippet}
 </Element>
 
 

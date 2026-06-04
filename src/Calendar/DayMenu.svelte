@@ -1,21 +1,28 @@
 <script lang="ts">
+  import { createBubbler, stopPropagation } from 'svelte/legacy';
+
+  const bubble = createBubbler();
   import type { Day } from "./Calendar.helper";
 
-  export let day: Day;
-  export let onClose = () => {};
-  export let onEnter = () => {
+  interface Props {
+    day: Day;
+    onClose?: any;
+    onEnter?: any;
+  }
+
+  let { day = $bindable(), onClose = () => {}, onEnter = () => {
     
-  };
+  } }: Props = $props();
 </script>
 
-<div class="menu" on:click|stopPropagation on:keypress={onEnter}>
+<div class="menu" onclick={stopPropagation(bubble('click'))} onkeypress={onEnter}>
   <label for="bg">Background</label>
   <input type="color" name="" id="bg" bind:value={day.bg} />
   <label for="border">Border</label>
   <input type="color" name="" id="border" bind:value={day.bd} />
   <label for="text">Text</label>
   <textarea name="" id="text" bind:value={day.text}></textarea>
-  <button on:click|stopPropagation={onClose}>Close</button>
+  <button onclick={stopPropagation(onClose)}>Close</button>
 </div>
 
 <style>

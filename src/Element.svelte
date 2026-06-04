@@ -1,15 +1,25 @@
+<script lang="ts">
+  interface Props {
+    title?: import('svelte').Snippet;
+    options?: import('svelte').Snippet;
+    children?: import('svelte').Snippet;
+  }
+
+  let { title, options, children }: Props = $props();
+</script>
+
 <div class="element">
   <h2>
-    <slot name="title" />
+    {@render title?.()}
   </h2>
   <div class="options">
-    <slot name="options" />
+    {@render options?.()}
   </div>
   <hr>
   <div class="content">
     <div class="lefttop corner"></div>
     <div class="rightbottom corner"></div>
-    <slot />
+    {@render children?.()}
   </div>
 </div>
 
